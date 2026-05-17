@@ -54,8 +54,25 @@ export default function Home() {
   const [frameStyle, setFrameStyle] = useState<"macos" | "windows" | "none">("macos");
   const [filename, setFilename] = useState("fibonacci.ts");
   const [showLineNumbers, setShowLineNumbers] = useState(false);
+  const [highlightInput, setHighlightInput] = useState("");
   const [highlightedHtml, setHighlightedHtml] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // "1,3,5-7" → [1, 3, 5, 6, 7]
+  const parseHighlightLines = (input: string): number[] => {
+    const lines = new Set<number>();
+    input.split(",").forEach((part) => {
+      const trimmed = part.trim();
+      if (!trimmed) return;
+      const range = trimmed.split("-").map(Number);
+      if (range.length === 2 && !isNaN(range[0]) && !isNaN(range[1])) {
+        for (let i = range[0]; i <= range[1]; i++) lines.add(i);
+      } else if (!isNaN(range[0])) {
+        lines.add(range[0]);
+      }
+    });
+    return Array.from(lines);
+  };
 
   const handleHighlight = useCallback(async () => {
     if (!code.trim()) return;
@@ -64,14 +81,19 @@ export default function Home() {
       const res = await fetch("/api/highlight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, language, theme }),
+        body: JSON.stringify({
+          code,
+          language,
+          theme,
+          highlightLines: parseHighlightLines(highlightInput),
+        }),
       });
       const data = await res.json();
       setHighlightedHtml(data.html);
     } finally {
       setLoading(false);
     }
-  }, [code, language, theme]);
+  }, [code, language, theme, highlightInput]);
 
   return (
     <main className="min-h-screen bg-[#0f0f13] text-white">
@@ -147,15 +169,30 @@ export default function Home() {
             </div>
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer select-none">
-            <div
-              onClick={() => setShowLineNumbers(!showLineNumbers)}
-              className={`w-9 h-5 rounded-full transition-colors relative ${showLineNumbers ? "bg-indigo-500" : "bg-white/10"}`}
-            >
-              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${showLineNumbers ? "translate-x-4" : ""}`} />
+          <div className="flex flex-col gap-3">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <div
+                onClick={() => setShowLineNumbers(!showLineNumbers)}
+                className={`w-9 h-5 rounded-full transition-colors relative ${showLineNumbers ? "bg-indigo-500" : "bg-white/10"}`}
+              >
+                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${showLineNumbers ? "translate-x-4" : ""}`} />
+              </div>
+              <span className="text-sm text-white/60">줄 번호 표시</span>
+            </label>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs text-white/40">
+                강조할 줄
+                <span className="ml-2 text-white/20 font-mono">예: 1,3,5-7</span>
+              </label>
+              <input
+                value={highlightInput}
+                onChange={(e) => setHighlightInput(e.target.value)}
+                placeholder="1,3,5-7"
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm font-mono text-white placeholder-white/20 focus:outline-none focus:border-yellow-500/60"
+              />
             </div>
-            <span className="text-sm text-white/60">줄 번호 표시</span>
-          </label>
+          </div>
 
           {/* 코드 입력 */}
           <div className="flex flex-col gap-1.5 flex-1">

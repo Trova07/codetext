@@ -56,3 +56,16 @@ body {
   user-select: none;
   flex-shrink: 0;
 }
+
+/* 특정 줄 하이라이트 */
+.shiki code .highlighted-line {
+  display: block;
+  margin: 0 -1.25rem;
+  padding: 0 1.25rem;
+  background-color: rgba(255, 220, 100, 0.12);
+  border-left: 3px solid rgba(255, 200, 50, 0.7);
+}
+
+.shiki code .highlighted-line::before {
+  color: rgba(255, 200, 80, 0.6) !important;
+}
