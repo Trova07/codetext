@@ -49,9 +49,18 @@ console.log(fibMemo(40)); // 102334155`;
 
 export default function Home() {
   const [code, setCode] = useState(SAMPLE_CODE);
-  const [language, setLanguage] = useState("typescript");
-  const [theme, setTheme] = useState("github-dark");
-  const [frameStyle, setFrameStyle] = useState<"macos" | "windows" | "none">("macos");
+  const [language, setLanguage] = useState<string>(() => {
+    if (typeof window === "undefined") return "typescript";
+    return localStorage.getItem("codetext-language") ?? "typescript";
+  });
+  const [theme, setTheme] = useState<string>(() => {
+    if (typeof window === "undefined") return "github-dark";
+    return localStorage.getItem("codetext-theme") ?? "github-dark";
+  });
+  const [frameStyle, setFrameStyle] = useState<"macos" | "windows" | "none">(() => {
+    if (typeof window === "undefined") return "macos";
+    return (localStorage.getItem("codetext-frame") as "macos" | "windows" | "none") ?? "macos";
+  });
   const [filename, setFilename] = useState("fibonacci.ts");
   const [showLineNumbers, setShowLineNumbers] = useState(false);
   const [highlightInput, setHighlightInput] = useState("");
@@ -123,7 +132,10 @@ export default function Home() {
               <label className="text-xs text-white/40">언어</label>
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                onChange={(e) => {
+                  setLanguage(e.target.value);
+                  localStorage.setItem("codetext-language", e.target.value);
+                }}
                 className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
               >
                 {LANGUAGES.map((l) => (
@@ -136,7 +148,10 @@ export default function Home() {
               <label className="text-xs text-white/40">테마</label>
               <select
                 value={theme}
-                onChange={(e) => setTheme(e.target.value)}
+                onChange={(e) => {
+                  setTheme(e.target.value);
+                  localStorage.setItem("codetext-theme", e.target.value);
+                }}
                 className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
               >
                 {THEMES.map((t) => (
@@ -149,7 +164,11 @@ export default function Home() {
               <label className="text-xs text-white/40">창 프레임</label>
               <select
                 value={frameStyle}
-                onChange={(e) => setFrameStyle(e.target.value as "macos" | "windows" | "none")}
+                onChange={(e) => {
+                  const val = e.target.value as "macos" | "windows" | "none";
+                  setFrameStyle(val);
+                  localStorage.setItem("codetext-frame", val);
+                }}
                 className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
               >
                 <option value="macos" className="bg-[#1a1a24]">macOS</option>
