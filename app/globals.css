@@ -38,6 +38,8 @@ body {
 .shiki code {
   font-family: inherit;
   font-size: inherit;
+  /* \n 텍스트 노드 높이를 0으로 — block span과의 이중 줄바꿈 방지 */
+  line-height: 0;
 }
 
 /* 줄 번호 — CSS counter 방식 */
@@ -60,6 +62,7 @@ body {
 /* 모든 줄을 항상 block으로 — 하이라이트 유무와 관계없이 일관된 레이아웃 */
 .shiki code .line {
   display: block;
+  line-height: 1.7;
   margin: 0 -1.25rem;
   padding: 0 1.25rem;
 }
