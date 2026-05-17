@@ -40,6 +40,8 @@ body {
   font-size: inherit;
   /* block .line span 사이의 \n 텍스트 노드를 무시해 이중 줄바꿈 방지 */
   white-space: normal;
+  display: block;
+  min-width: fit-content;
 }
 
 /* 줄 번호 — CSS counter 방식 */

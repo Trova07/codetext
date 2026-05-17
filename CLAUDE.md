@@ -69,6 +69,10 @@ app/
 - `<pre>` 안에서 `.line`을 `display: block`으로 만들면 block 줄바꿈 + `\n` 텍스트 노드 줄바꿈이 겹쳐 간격 2배
 - **해결**: `code { white-space: normal }` → `\n` 노드 무시, `.line { white-space: pre }` → 줄 내부 들여쓰기 보존
 
+### 긴 줄에서 하이라이트 배경 잘림 문제 (`app/globals.css`)
+- `.shiki`에 `overflow-x: auto`가 있어도 `code` 요소가 기본 inline이면 실제 스크롤 너비가 아닌 컨테이너 너비만큼만 배경이 칠해짐
+- **해결**: `code { display: block; min-width: fit-content }` → `code`가 가장 긴 줄 기준으로 확장되어 `.highlighted-line` 배경이 스크롤 영역 끝까지 채워짐
+
 ---
 
 ## 향후 추가 가능한 기능
