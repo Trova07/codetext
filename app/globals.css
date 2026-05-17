@@ -39,3 +39,20 @@ body {
   font-family: inherit;
   font-size: inherit;
 }
+
+/* 줄 번호 — CSS counter 방식 */
+.line-numbers .shiki code {
+  counter-reset: line;
+}
+
+.line-numbers .shiki code .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2em;
+  margin-right: 1.5em;
+  text-align: right;
+  color: rgba(128, 128, 128, 0.4);
+  user-select: none;
+  flex-shrink: 0;
+}
