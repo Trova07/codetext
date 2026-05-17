@@ -46,7 +46,7 @@ export default function Home() {
     if (savedTheme) setTheme(savedTheme);
     if (savedFrame) setFrameStyle(savedFrame as "macos" | "windows" | "none");
   }, []);
-  const [filename, setFilename] = useState("fibonacci.ts");
+  const [filename, setFilename] = useState("");
   const [showLineNumbers, setShowLineNumbers] = useState(false);
   const [highlightInput, setHighlightInput] = useState("");
   const [highlightedHtml, setHighlightedHtml] = useState("");
