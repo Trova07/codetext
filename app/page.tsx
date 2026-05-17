@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const CodePreview = dynamic(() => import("./components/CodePreview"), {
@@ -49,18 +49,18 @@ console.log(fibMemo(40)); // 102334155`;
 
 export default function Home() {
   const [code, setCode] = useState(SAMPLE_CODE);
-  const [language, setLanguage] = useState<string>(() => {
-    if (typeof window === "undefined") return "typescript";
-    return localStorage.getItem("codetext-language") ?? "typescript";
-  });
-  const [theme, setTheme] = useState<string>(() => {
-    if (typeof window === "undefined") return "github-dark";
-    return localStorage.getItem("codetext-theme") ?? "github-dark";
-  });
-  const [frameStyle, setFrameStyle] = useState<"macos" | "windows" | "none">(() => {
-    if (typeof window === "undefined") return "macos";
-    return (localStorage.getItem("codetext-frame") as "macos" | "windows" | "none") ?? "macos";
-  });
+  const [language, setLanguage] = useState("typescript");
+  const [theme, setTheme] = useState("github-dark");
+  const [frameStyle, setFrameStyle] = useState<"macos" | "windows" | "none">("macos");
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("codetext-language");
+    const savedTheme = localStorage.getItem("codetext-theme");
+    const savedFrame = localStorage.getItem("codetext-frame");
+    if (savedLanguage) setLanguage(savedLanguage);
+    if (savedTheme) setTheme(savedTheme);
+    if (savedFrame) setFrameStyle(savedFrame as "macos" | "windows" | "none");
+  }, []);
   const [filename, setFilename] = useState("fibonacci.ts");
   const [showLineNumbers, setShowLineNumbers] = useState(false);
   const [highlightInput, setHighlightInput] = useState("");
