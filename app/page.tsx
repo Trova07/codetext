@@ -31,24 +31,9 @@ const THEMES = [
   { value: "material-theme-ocean", label: "Material Ocean" },
 ];
 
-const SAMPLE_CODE = `function fibonacci(n: number): number {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-// 메모이제이션 버전
-function fibMemo(n: number, memo = new Map<number, number>()): number {
-  if (memo.has(n)) return memo.get(n)!;
-  if (n <= 1) return n;
-  const result = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
-  memo.set(n, result);
-  return result;
-}
-
-console.log(fibMemo(40)); // 102334155`;
 
 export default function Home() {
-  const [code, setCode] = useState(SAMPLE_CODE);
+  const [code, setCode] = useState("");
   const [language, setLanguage] = useState("typescript");
   const [theme, setTheme] = useState("github-dark");
   const [frameStyle, setFrameStyle] = useState<"macos" | "windows" | "none">("macos");
@@ -177,15 +162,17 @@ export default function Home() {
               </select>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs text-white/40">파일명</label>
-              <input
-                value={filename}
-                onChange={(e) => setFilename(e.target.value)}
-                placeholder="예: main.ts"
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-indigo-500"
-              />
-            </div>
+            {frameStyle !== "none" && (
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-white/40">파일명</label>
+                <input
+                  value={filename}
+                  onChange={(e) => setFilename(e.target.value)}
+                  placeholder="예: main.ts"
+                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-3">
